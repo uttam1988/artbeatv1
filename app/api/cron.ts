@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server"
+import { NextResponse } from "next/server";
 
 export async function GET() {
-    const result = "Helo, World! This is CRON route."
+    const timestamp = new Date().toLocaleString();
+    console.log(`Cron executed at: ${timestamp}`);
 
-    return NextResponse.json({ data: result })
-
+    return NextResponse.json({ message: "Hello, World! This is CRON route.", timestamp });
 }
