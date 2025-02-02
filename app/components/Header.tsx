@@ -15,10 +15,10 @@ const Header = () => {
 							<span>ArtBeat</span>
 						</Link>
 					</div>
-					<div className='hidden lg:flex lg:flex-1 lg:justify-end'>
+					<div className='flex lg:flex-1 lg:justify-end'>
 						<Link
 							href='/register'
-							className='inline-block text-center bg-yellow-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105'>
+							className='inline-block text-center bg-yellow-600 text-white font-semibold py-1 md:py-2 px-4 md:px-6 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105'>
 							New Register <span aria-hidden='true'>&rarr;</span>
 						</Link>
 					</div>

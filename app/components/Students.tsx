@@ -5,11 +5,15 @@ import { collection, getDocs } from "firebase/firestore";
 
 // Define TypeScript types for the student data
 interface Student {
-	dateOfJoining: string;
 	id: string;
-	name: string;
+	studentName: string;
+	parentName: string;
 	mobile: string;
+	alternateMobile: string;
 	email: string;
+	dateOfJoining: string;
+	admissionFee: string;
+	course: string;
 }
 
 const Students = () => {
@@ -60,16 +64,28 @@ const Students = () => {
 					<thead>
 						<tr className='bg-gray-100'>
 							<th className='px-6 py-3 text-left text-sm font-medium text-gray-700'>
-								Name
+								Student Name
+							</th>
+							<th className='px-6 py-3 text-left text-sm font-medium text-gray-700'>
+								Parent Name
 							</th>
 							<th className='px-6 py-3 text-left text-sm font-medium text-gray-700'>
 								Mobile
+							</th>
+							<th className='px-6 py-3 text-left text-sm font-medium text-gray-700'>
+								Alternate Mobile
+							</th>
+							<th className='px-6 py-3 text-left text-sm font-medium text-gray-700'>
+								Course
 							</th>
 							<th className='px-6 py-3 text-left text-sm font-medium text-gray-700'>
 								Email
 							</th>
 							<th className='px-6 py-3 text-left text-sm font-medium text-gray-700'>
 								Date of Joining
+							</th>
+							<th className='px-6 py-3 text-left text-sm font-medium text-gray-700'>
+								Admission Fee Amount
 							</th>
 						</tr>
 					</thead>
@@ -79,16 +95,28 @@ const Students = () => {
 								key={student.id}
 								className='border-b'>
 								<td className='px-6 py-4 text-sm text-gray-900'>
-									{student.name}
+									{student.studentName}
+								</td>
+								<td className='px-6 py-4 text-sm text-gray-900'>
+									{student.parentName}
 								</td>
 								<td className='px-6 py-4 text-sm text-gray-900'>
 									{student.mobile}
+								</td>
+								<td className='px-6 py-4 text-sm text-gray-900'>
+									{student.alternateMobile}
+								</td>
+								<td className='px-6 py-4 text-sm text-gray-900'>
+									{student.course}
 								</td>
 								<td className='px-6 py-4 text-sm text-gray-900'>
 									{student.email}
 								</td>
 								<td className='px-6 py-4 text-sm text-gray-900'>
 									{student.dateOfJoining}
+								</td>
+								<td className='px-6 py-4 text-sm text-gray-900'>
+									{student.admissionFee}
 								</td>
 							</tr>
 						))}
