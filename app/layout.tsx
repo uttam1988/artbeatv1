@@ -13,7 +13,13 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='en'>
-			<body>{children}</body>
+			<head>
+				<link
+					rel='stylesheet'
+					href='https://fonts.googleapis.com/icon?family=Material+Icons'
+				/>
+			</head>
+			<body className='bg-gray-100'>{children}</body>
 		</html>
 	);
 }

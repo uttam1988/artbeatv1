@@ -1,12 +1,10 @@
 "use client";
-import Header from "./components/Header";
-import Students from "./components/Students";
+import AdminDashboard from "./Dashboard";
 
 const Home = () => {
 	return (
 		<>
-			<Header />
-			<Students />
+			<AdminDashboard />
 		</>
 	);
 };

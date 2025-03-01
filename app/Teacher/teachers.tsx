@@ -1,73 +1,72 @@
 "use client";
 import { useEffect, useState } from "react";
 import { db } from "../lib/firebaseConfig";
+import { format } from "date-fns";
 import { collection, getDocs, Timestamp } from "firebase/firestore";
 
-// Define TypeScript types for the student data
-interface Student {
+// Define TypeScript types for teachers
+interface Teacher {
 	id: string;
-	studentName: string;
-	parentName: string;
+	teacherName: string;
 	mobile: string;
-	alternateMobile: string;
 	email: string;
 	dateOfJoining: string;
-	admissionFee: string;
-	course: string[];
+	speciality: string[];
+	address: string;
 }
 
-const Students = () => {
-	// State for students, loading, and error
-	const [students, setStudents] = useState<Student[]>([]);
+const Teachers = () => {
+	// State for teachers, loading, and error
+	const [teachers, setTeachers] = useState<Teacher[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string | null>(null);
 
-	// Fetch students from Firestore
+	// Fetch teachers from Firestore
 	useEffect(() => {
-		const fetchStudents = async () => {
+		const fetchTeachers = async () => {
 			try {
-				const querySnapshot = await getDocs(collection(db, "students"));
-				const studentList = querySnapshot.docs.map((doc) => {
+				const querySnapshot = await getDocs(collection(db, "teachers"));
+				const teacherList = querySnapshot.docs.map((doc) => {
 					const data = doc.data();
 
 					// Convert Firestore timestamp to readable date
+
+					// Convert Firestore timestamp or ISO string to formatted date
 					const formattedDate =
 						data.dateOfJoining instanceof Timestamp
-							? data.dateOfJoining.toDate().toLocaleDateString()
-							: data.dateOfJoining;
+							? format(data.dateOfJoining.toDate(), "dd-MMM-yyyy")
+							: format(new Date(data.dateOfJoining), "dd-MMM-yyyy");
 
 					return {
 						id: doc.id,
-						studentName: data.studentName,
-						parentName: data.parentName,
+						teacherName: data.name,
 						mobile: data.mobile,
-						alternateMobile: data.alternateMobile,
 						email: data.email,
-						admissionFee: data.admissionFee,
-						course: Array.isArray(data.selectedCourses)
-							? data.selectedCourses
-							: [data.selectedCourses], // Ensure array
+						speciality: Array.isArray(data.speciality)
+							? data.speciality
+							: [data.speciality], // Ensure it's an array
 						dateOfJoining: formattedDate, // Fixed date issue
+						address: data.address,
 					};
-				}) as Student[];
+				}) as Teacher[];
 
-				setStudents(studentList);
+				setTeachers(teacherList);
 			} catch (err) {
-				console.error("Error fetching students:", err);
-				setError("Failed to load students. Please try again.");
+				console.error("Error fetching teachers:", err);
+				setError("Failed to load teachers. Please try again.");
 			} finally {
 				setLoading(false);
 			}
 		};
 
-		fetchStudents();
+		fetchTeachers();
 	}, []);
 
-	// Show loading, error, or student list
+	// Show loading, error, or teacher list
 	if (loading) {
 		return (
 			<div className='h-screen w-full flex flex-col justify-center items-center'>
-				<p className='font-semibold text-lg'>Loading students...</p>
+				<p className='font-semibold text-lg'>Loading teachers...</p>
 			</div>
 		);
 	}
@@ -78,20 +77,18 @@ const Students = () => {
 
 	return (
 		<div className='p-4 bg-white rounded-lg mt-4'>
-			<h2 className='text-xl font-bold mb-4'>Student List</h2>
-			{students.length > 0 ? (
+			<h2 className='text-xl font-bold mb-4'>Teacher List</h2>
+			{teachers.length > 0 ? (
 				<table className='min-w-full border rounded-xl shadow table-auto'>
 					<thead>
 						<tr className='bg-gray-100'>
 							{[
-								"Student Name",
-								"Parent Name",
+								"Teacher Name",
 								"Mobile",
-								"Alternate Mobile",
-								"Courses",
 								"Email",
+								"Address",
+								"Speciality",
 								"Date of Joining",
-								"Admission Fee Amount",
 							].map((header) => (
 								<th
 									key={header}
@@ -102,47 +99,41 @@ const Students = () => {
 						</tr>
 					</thead>
 					<tbody>
-						{students.map((student) => (
+						{teachers.map((teacher) => (
 							<tr
-								key={student.id}
+								key={teacher.id}
 								className='border-b'>
 								<td className='px-6 py-4 text-sm text-gray-900'>
-									{student.studentName}
+									{teacher.teacherName}
 								</td>
 								<td className='px-6 py-4 text-sm text-gray-900'>
-									{student.parentName}
+									{teacher.mobile}
 								</td>
 								<td className='px-6 py-4 text-sm text-gray-900'>
-									{student.mobile}
+									{teacher.email}
 								</td>
 								<td className='px-6 py-4 text-sm text-gray-900'>
-									{student.alternateMobile}
+									{teacher.address}
 								</td>
 								<td className='px-6 py-4 text-sm text-gray-900'>
 									<ul>
-										{student.course.map((course, index) => (
+										{teacher.speciality.map((course, index) => (
 											<li key={index}>{course}</li>
 										))}
 									</ul>
 								</td>
 								<td className='px-6 py-4 text-sm text-gray-900'>
-									{student.email}
-								</td>
-								<td className='px-6 py-4 text-sm text-gray-900'>
-									{student.dateOfJoining}
-								</td>
-								<td className='px-6 py-4 text-sm text-gray-900'>
-									{student.admissionFee}
+									{teacher.dateOfJoining}
 								</td>
 							</tr>
 						))}
 					</tbody>
 				</table>
 			) : (
-				<p>No students found.</p>
+				<p>No teachers found.</p>
 			)}
 		</div>
 	);
 };
 
-export default Students;
+export default Teachers;
