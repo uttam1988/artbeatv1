@@ -5,34 +5,44 @@ import { collection, getDocs, setDoc, doc } from "firebase/firestore";
 import dayjs from "dayjs";
 
 const Attendance = () => {
-	const [batches, setBatches] = useState([]);
-	const [students, setStudents] = useState([]);
-	const [selectedBatch, setSelectedBatch] = useState(null);
-	const [selectedStudent, setSelectedStudent] = useState(null);
+	const [batches, setBatches] = useState<{ id: string; name: string }[]>([]);
+	const [students, setStudents] = useState<
+		{ id: string; studentName: string }[]
+	>([]);
+	const [selectedBatch, setSelectedBatch] = useState<string | null>(null);
+	const [selectedStudent, setSelectedStudent] = useState<{
+		id: string;
+		studentName: string;
+	} | null>(null);
 	const [attendance, setAttendance] = useState({});
 
 	useEffect(() => {
-		// Fetch batches
 		const fetchBatches = async () => {
 			const batchSnap = await getDocs(collection(db, "batches"));
-			const batchList = batchSnap.docs.map((doc) => ({
-				id: doc.id,
-				...doc.data(),
-			}));
+			const batchList = batchSnap.docs.map((doc) => {
+				const data = doc.data();
+				return {
+					id: doc.id,
+					name: data.name || "Unknown", // Ensure `name` exists
+				};
+			});
 			setBatches(batchList);
 		};
+
 		fetchBatches();
 	}, []);
 
 	useEffect(() => {
-		// Fetch all students
 		const fetchStudents = async () => {
 			try {
 				const studentSnap = await getDocs(collection(db, "students"));
-				const studentList = studentSnap.docs.map((doc) => ({
-					id: doc.id,
-					...doc.data(),
-				}));
+				const studentList = studentSnap.docs.map((doc) => {
+					const data = doc.data();
+					return {
+						id: doc.id,
+						studentName: data.studentName || "Unknown", // Ensure `studentName` exists
+					};
+				});
 				setStudents(studentList);
 			} catch (error) {
 				console.error("Error fetching students:", error);
@@ -108,7 +118,7 @@ const Attendance = () => {
 			<select
 				className='border p-2 mb-4 w-full'
 				onChange={(e) => {
-					const student = students.find((s) => s.id === e.target.value);
+					const student = students.find((s) => s.id === e.target.value) || null; // Ensure null if not found
 					console.log("Selected Student:", student); // Debugging log
 					setSelectedStudent(student);
 				}}>

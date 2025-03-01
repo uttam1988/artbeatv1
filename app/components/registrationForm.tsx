@@ -117,6 +117,7 @@ const RegistrationForm = () => {
 			});
 		} catch (error) {
 			setMessage({ text: "Failed to register. Try again.", type: "error" });
+			console.log(error);
 		} finally {
 			setIsSubmitting(false);
 		}

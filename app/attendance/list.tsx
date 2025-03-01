@@ -4,8 +4,19 @@ import { db } from "../lib/firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 
 const AttendanceList = () => {
-	const [attendanceRecords, setAttendanceRecords] = useState([]);
-	const [students, setStudents] = useState([]);
+	const [attendanceRecords, setAttendanceRecords] = useState<
+		{
+			id: string;
+			studentId?: string;
+			studentName?: string;
+			batchId?: string;
+			month?: string;
+			attendance?: Record<string, string>;
+		}[]
+	>([]);
+	const [students, setStudents] = useState<
+		{ id: string; studentName?: string }[]
+	>([]);
 	const [selectedStudent, setSelectedStudent] = useState("");
 
 	useEffect(() => {
@@ -106,9 +117,7 @@ const AttendanceList = () => {
 							))
 						) : (
 							<tr>
-								<td
-									colSpan='4'
-									className='text-center p-4'>
+								<td className='text-center p-4'>
 									No attendance records found.
 								</td>
 							</tr>

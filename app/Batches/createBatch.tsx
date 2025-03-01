@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { Dayjs } from "dayjs";
 import { db } from "../lib/firebaseConfig";
 import {
 	collection,
@@ -13,14 +14,18 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
 const BatchManagement = () => {
-	const [courses, setCourses] = useState([]);
-	const [students, setStudents] = useState([]);
-	const [teachers, setTeachers] = useState([]);
+	const [courses, setCourses] = useState<{ id: string; courseName: string }[]>(
+		[],
+	);
+	const [students, setStudents] = useState<
+		{ id: string; studentName: string }[]
+	>([]);
+	const [teachers, setTeachers] = useState<{ id: string; name: string }[]>([]);
 	const [batchName, setBatchName] = useState("");
-	const [timing, setTiming] = useState(null);
+	const [timing, setTiming] = useState<Dayjs | null>(null);
 	const [selectedCourse, setSelectedCourse] = useState("");
-	const [selectedStudents, setSelectedStudents] = useState([]);
-	const [selectedTeachers, setSelectedTeachers] = useState([]);
+	const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
+	const [selectedTeachers, setSelectedTeachers] = useState<string[]>([]);
 	const [editingId, setEditingId] = useState(null);
 
 	useEffect(() => {
@@ -31,12 +36,25 @@ const BatchManagement = () => {
 				getDocs(collection(db, "teachers")),
 			]);
 
-			setCourses(courseSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
-			setStudents(
-				studentSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
+			setCourses(
+				courseSnap.docs.map((doc) => ({
+					id: doc.id,
+					...(doc.data() as { courseName: string }), // Assert that 'name' exists
+				})),
 			);
+
+			setStudents(
+				studentSnap.docs.map((doc) => ({
+					id: doc.id,
+					...(doc.data() as { studentName: string }), // Assert that 'studentName' exists
+				})),
+			);
+
 			setTeachers(
-				teacherSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
+				teacherSnap.docs.map((doc) => ({
+					id: doc.id,
+					...(doc.data() as { name: string }), // Assert that 'teacherName' exists
+				})),
 			);
 		};
 		fetchData();
@@ -48,7 +66,7 @@ const BatchManagement = () => {
 
 		const batchData = {
 			name: batchName,
-			timing: timing.toISOString(),
+			timing: timing ? timing.toISOString() : null,
 			course: selectedCourse,
 			students: selectedStudents,
 			teachers: selectedTeachers,

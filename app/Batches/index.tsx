@@ -12,13 +12,16 @@ import {
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import TextField from "@mui/material/TextField";
 import dayjs from "dayjs";
 
 const BatchManagement = () => {
 	const [batches, setBatches] = useState([]);
-	const [courses, setCourses] = useState([]);
-	const [students, setStudents] = useState([]);
+	const [courses, setCourses] = useState<{ id: string; courseName: string }[]>(
+		[],
+	);
+	const [students, setStudents] = useState<
+		{ id: string; studentName: string }[]
+	>([]);
 	const [teachers, setTeachers] = useState([]);
 	const [batchName, setBatchName] = useState("");
 	const [timing, setTiming] = useState(null);
