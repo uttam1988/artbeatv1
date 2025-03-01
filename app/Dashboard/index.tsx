@@ -12,14 +12,38 @@ import AttendanceList from "../attendance/list";
 
 export default function AdminDashboard() {
 	const [activeTab, setActiveTab] = useState("overview");
+	const [sidebarOpen, setSidebarOpen] = useState(false);
 
 	return (
 		<div className='flex h-screen'>
-			{/* Sidebar */}
-			<Sidebar setActiveTab={setActiveTab} />
+			{/* Sidebar - Hidden on small screens, toggleable */}
+			<div className='hidden md:flex w-64 bg-gray-800'>
+				<Sidebar setActiveTab={setActiveTab} />
+			</div>
+
+			{/* Mobile Sidebar Toggle */}
+			<button
+				className='md:hidden fixed top-4 left-4 z-50 p-2 bg-gray-800 text-white rounded'
+				onClick={() => setSidebarOpen(!sidebarOpen)}>
+				☰
+			</button>
+
+			{/* Responsive Sidebar for Mobile */}
+			{sidebarOpen && (
+				<div className='fixed inset-0 bg-gray-900 bg-opacity-75 z-40 md:hidden'>
+					<div className='w-64 bg-gray-800 h-full p-4'>
+						<button
+							className='text-white mb-4'
+							onClick={() => setSidebarOpen(false)}>
+							✕
+						</button>
+						<Sidebar setActiveTab={setActiveTab} />
+					</div>
+				</div>
+			)}
 
 			{/* Main Content */}
-			<div className='flex-1 p-6 overflow-auto'>
+			<div className='flex-1 p-4 md:p-6 overflow-auto'>
 				{activeTab === "overview" && <DashboardOverview />}
 				{activeTab === "students" && <StudentManagement />}
 				{activeTab === "teachers" && <TeacherManagement />}
